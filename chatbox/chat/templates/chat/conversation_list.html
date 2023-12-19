@@ -7,7 +7,10 @@
     <h1>Conversation List</h1>
     <ul>
         {% for conversation in conversations %}
-            <li>{{ conversation }} - {{ conversation.date }}</li>
+            <li>
+                {{ conversation }} - {{ conversation.date }}
+                (<a href="{% url 'view_messages' conversation_id=conversation.id %}">View Messages</a>)
+            </li>
         {% endfor %}
     </ul>
 </body>

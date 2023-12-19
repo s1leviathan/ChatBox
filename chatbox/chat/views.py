@@ -52,4 +52,18 @@ def join_conversation(request):
             user, created = Users.objects.get_or_create(email=user_email, defaults={'name': user_name})
             conversation = Conversation.objects.create()
             conversation.users.add(user)
+
             return redirect('message_list', conversation_id=conversation.id)
+
+    return render(request, 'chat/home.html')
+        
+
+
+def view_messages(request, conversation_id):
+    try:
+        conversation = Conversation.objects.get(pk=conversation_id)
+        messages = Messages.objects.filter(conversation=conversation)
+    except Conversation.DoesNotExist:
+        return render(request, 'chat/conversation_not_found.html')
+
+    return render(request, 'chat/view_messages.html', {'conversation': conversation, 'messages': messages})
