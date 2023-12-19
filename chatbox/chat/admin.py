@@ -13,3 +13,8 @@ class ConversationAdmin(admin.ModelAdmin):
         return ', '.join([user.name for user in obj.users.all()])
 
     display_users.short_description = 'Users'
+
+
+class MessagesAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'conversation', 'text', 'date')
+    search_fields = ('user__name', 'conversation__id')    
