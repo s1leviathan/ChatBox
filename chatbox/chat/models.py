@@ -16,3 +16,13 @@ class Conversation(models.Model):
 
     def __str__(self):
         return f"Conversation {self.id}"
+
+class Messages(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(Users, on_delete=models.CASCADE)
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE)
+    text = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Message {self.id} by {self.user.name} in Conversation {self.conversation.id}"    
