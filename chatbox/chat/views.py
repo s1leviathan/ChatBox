@@ -1,6 +1,20 @@
 from django.shortcuts import render, redirect
 from .models import Users, Conversation, Messages
 
+def home(request):
+    if request.method == 'POST':
+        name = request.POST.get('name', '')
+        email = request.POST.get('email', '')
+
+        if name and email:
+            # Create or get the user based on the provided email
+            user, created = Users.objects.get_or_create(email=email, defaults={'name': name})
+            
+            # Redirect to a page where users can view their conversations, etc.
+            return redirect('user_conversations', user_id=user.id)
+
+    return render(request,)
+
 def user_list(request):
     users = Users.objects.all()
     return render(request, 'chat/user_list.html', {'users': users})
