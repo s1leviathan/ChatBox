@@ -2,6 +2,7 @@ import time
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Users, Conversation, Messages
+from .forms import MessageForm
 
 def home(request):
     if request.method == 'POST':
@@ -27,21 +28,27 @@ def message_list(request, conversation_id):
     messages = Messages.objects.filter(conversation=conversation)
 
     if request.method == 'POST':
-        time.sleep(1)  
-        user_name = request.POST.get('name', '')
-        user_email = request.POST.get('email', '')
-        text = request.POST.get('message', '')
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            user_name = form.cleaned_data['name']
+            user_email = form.cleaned_data['email']
+            text = form.cleaned_data['message']
 
-        if user_name and user_email and text:
             user, created = Users.objects.get_or_create(email=user_email, defaults={'name': user_name})
             Messages.objects.create(user=user, conversation=conversation, text=text)
+
+            
+            time.sleep(1)
+
             bot_user = Users.objects.get(name="d1")
             auto_reply = "Sending Message, please wait"
             Messages.objects.create(user=bot_user, conversation=conversation, text=auto_reply)
 
-        return redirect('message_list', conversation_id=conversation_id)
+            return redirect('message_list', conversation_id=conversation_id)
+    else:
+        form = MessageForm()
 
-    return render(request, 'chat/message_list.html', {'messages': messages, 'conversation': conversation})
+    return render(request, 'chat/message_list.html', {'messages': messages, 'conversation': conversation, 'form': form})
 
 def join_conversation(request):
     if request.method == 'POST':
