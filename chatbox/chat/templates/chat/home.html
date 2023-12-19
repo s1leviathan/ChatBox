@@ -5,15 +5,13 @@
 </head>
 <body>
     <h1>Welcome to the Chat App!</h1>
-    <form method="post" action="{% url 'message_list' conversation_id=conversation.id %}">
+    <form method="post" action="{% url 'home' %}">
         {% csrf_token %}
         <label for="name">Name:</label>
         <input type="text" name="name" required><br>
         <label for="email">Email:</label>
         <input type="email" name="email" required><br>
-        <label for="message">Message:</label>
-        <textarea name="message" rows="4" cols="50" required></textarea><br>
-        <button type="submit">Send Message</button>
+        <button type="submit">Join Chat</button>
     </form>
 </body>
 </html>
