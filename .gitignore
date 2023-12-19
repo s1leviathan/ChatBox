@@ -4,3 +4,4 @@ chatbox/db.sqlite3
 **/*.pyc
 env
 env/**
+db.sqlite3
