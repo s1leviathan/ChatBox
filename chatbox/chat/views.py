@@ -10,7 +10,7 @@ def home(request):
 
         if name and email:
             user, created = Users.objects.get_or_create(email=email, defaults={'name': name})
-            return redirect('user_conversations', user_id=user.id)
+            return redirect('message_list', conversation_id=user.id)
 
     return render(request, 'chat/home.html')
 
