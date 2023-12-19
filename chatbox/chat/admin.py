@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Users, Conversation, Messages
 
-# Register your models here.
+class UsersAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'email')
+    search_fields = ('name', 'email')
