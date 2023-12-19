@@ -42,3 +42,14 @@ def message_list(request, conversation_id):
         return redirect('message_list', conversation_id=conversation_id)
 
     return render(request, 'chat/message_list.html', {'messages': messages, 'conversation': conversation})
+
+def join_conversation(request):
+    if request.method == 'POST':
+        user_name = request.POST.get('name', '')
+        user_email = request.POST.get('email', '')
+
+        if user_name and user_email:
+            user, created = Users.objects.get_or_create(email=user_email, defaults={'name': user_name})
+            conversation = Conversation.objects.create()
+            conversation.users.add(user)
+            return redirect('message_list', conversation_id=conversation.id)
