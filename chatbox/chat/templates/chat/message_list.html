@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Messages in Conversation {{ conversation.id }}</title>
+</head>
+<body>
+    <h1>Messages in Conversation {{ conversation.id }}</h1>
+    <ul>
+        {% for message in messages %}
+            <li>{{ message.user.name }} - {{ message.text }} - {{ message.date }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
