@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 
 
 class Users(models.Model):
+    class Meta:
+        verbose_name_plural = "users"
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
@@ -19,6 +21,8 @@ class Conversation(models.Model):
         return f"Conversation {self.id}"
 
 class Messages(models.Model):
+    class Meta:
+        verbose_name_plural = "messages"
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE)
