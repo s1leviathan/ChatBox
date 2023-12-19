@@ -5,3 +5,4 @@ chatbox/db.sqlite3
 env
 env/**
 db.sqlite3
+**/*.sqlite3
