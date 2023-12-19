@@ -1,18 +1,19 @@
 from django.contrib import admin
-from .models import Users, Conversation, Messages
+from .models import Conversation, Messages
+from django.contrib.auth.models import User 
 
-class UsersAdmin(admin.ModelAdmin):
+class UserAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'email')
     search_fields = ('name', 'email')
 
 
 class ConversationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'display_users', 'date')
+    list_display = ('id', 'display_user', 'date')
 
-    def display_users(self, obj):
-        return ', '.join([user.name for user in obj.users.all()])
+    def display_user(self, obj):
+        return ', '.join([user.name for user in obj.User.all()])
 
-    display_users.short_description = 'Users'
+    display_user.short_description = 'User'
 
 
 class MessagesAdmin(admin.ModelAdmin):
@@ -21,6 +22,6 @@ class MessagesAdmin(admin.ModelAdmin):
 
 
 
-admin.site.register(Users, UsersAdmin)
+# admin.site.register(User, UserAdmin)
 admin.site.register(Conversation, ConversationAdmin)
 admin.site.register(Messages, MessagesAdmin)
