@@ -18,3 +18,9 @@ class ConversationAdmin(admin.ModelAdmin):
 class MessagesAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'conversation', 'text', 'date')
     search_fields = ('user__name', 'conversation__id')    
+
+
+
+admin.site.register(Users, UsersAdmin)
+admin.site.register(Conversation, ConversationAdmin)
+admin.site.register(Messages, MessagesAdmin)
