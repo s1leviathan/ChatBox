@@ -1,0 +1,6 @@
+venv
+venv/**
+mydjango/db.sqlite3
+**/*.pyc
+env
+env/**
