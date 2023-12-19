@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Users, Conversation, Messages
 from .forms import MessageForm
+from django.contrib.auth.decorators import login_required
 
 def home(request):
     if request.method == 'POST':
@@ -23,6 +24,7 @@ def conversation_list(request):
     conversations = Conversation.objects.all()
     return render(request, 'chat/conversation_list.html', {'conversations': conversations})
 
+@login_required
 def message_list(request, conversation_id):
     conversation = Conversation.objects.get(pk=conversation_id)
     messages = Messages.objects.filter(conversation=conversation)
@@ -30,17 +32,15 @@ def message_list(request, conversation_id):
     if request.method == 'POST':
         form = MessageForm(request.POST)
         if form.is_valid():
-            user_name = form.cleaned_data['name']
-            user_email = form.cleaned_data['email']
+            user = request.user 
             text = form.cleaned_data['message']
 
-            user, created = Users.objects.get_or_create(email=user_email, defaults={'name': user_name})
             Messages.objects.create(user=user, conversation=conversation, text=text)
 
-            
+        
             time.sleep(1)
 
-            bot_user = Users.objects.get(name="d1")
+            bot_user = Users.objects.get(name="dimitris")
             auto_reply = "Sending Message, please wait"
             Messages.objects.create(user=bot_user, conversation=conversation, text=auto_reply)
 

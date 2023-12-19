@@ -10,5 +10,12 @@
             <li>{{ message.user.name }} - {{ message.text }} - {{ message.date }}</li>
         {% endfor %}
     </ul>
+    
+    <h2>Post a Message</h2>
+    <form method="post" action="{% url 'message_list' conversation_id=conversation.id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Send Message</button>
+    </form>
 </body>
 </html>
