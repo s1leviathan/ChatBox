@@ -67,3 +67,7 @@ def view_messages(request, conversation_id):
         return render(request, 'chat/conversation_not_found.html')
 
     return render(request, 'chat/view_messages.html', {'conversation': conversation, 'messages': messages})
+
+
+def conversation_not_found(request):
+    return render(request, 'chat/conversation_not_found.html')
