@@ -1,6 +1,8 @@
 venv
 venv/**
-mydjango/db.sqlite3
+chatbox/db.sqlite3
 **/*.pyc
 env
 env/**
+db.sqlite3
+**/*.sqlite3
