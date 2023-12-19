@@ -1,9 +1,10 @@
 import time
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .models import Users, Conversation, Messages
 from .forms import MessageForm
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 
 def home(request):
     if request.method == 'POST':
@@ -24,31 +25,36 @@ def conversation_list(request):
     conversations = Conversation.objects.all()
     return render(request, 'chat/conversation_list.html', {'conversations': conversations})
 
-@login_required
 def message_list(request, conversation_id):
     conversation = Conversation.objects.get(pk=conversation_id)
     messages = Messages.objects.filter(conversation=conversation)
 
     if request.method == 'POST':
-        form = MessageForm(request.POST)
-        if form.is_valid():
-            user = request.user 
-            text = form.cleaned_data['message']
+        text = request.POST.get('message', '')
 
-            Messages.objects.create(user=user, conversation=conversation, text=text)
+        user_name = request.session.get('user_name', 'DefaultName')
+        user_email = request.session.get('user_email')
+        user, created = Users.objects.get_or_create(email=user_email, defaults={'name': user_name})
 
-        
-            time.sleep(1)
+     
+        Messages.objects.create(user=user, conversation=conversation, text=text)
 
-            bot_user = Users.objects.get(name="dimitris")
-            auto_reply = "Sending Message, please wait"
+       
+        import time
+        time.sleep(1)
+
+        bot_user_name = 'dimitris'
+        bot_user, _ = Users.objects.get_or_create(name=bot_user_name, defaults={'email': 'bot@example.com'})
+
+       
+        if user != bot_user:
+            auto_reply = "Sorry"
             Messages.objects.create(user=bot_user, conversation=conversation, text=auto_reply)
 
-            return redirect('message_list', conversation_id=conversation_id)
-    else:
-        form = MessageForm()
+       
+        messages = Messages.objects.filter(conversation=conversation)
 
-    return render(request, 'chat/message_list.html', {'messages': messages, 'conversation': conversation, 'form': form})
+    return render(request, 'chat/message_list.html', {'messages': messages, 'conversation': conversation})
 
 def join_conversation(request):
     if request.method == 'POST':
@@ -67,11 +73,8 @@ def join_conversation(request):
 
 
 def view_messages(request, conversation_id):
-    try:
-        conversation = Conversation.objects.get(pk=conversation_id)
-        messages = Messages.objects.filter(conversation=conversation)
-    except Conversation.DoesNotExist:
-        return render(request, 'chat/conversation_not_found.html')
+    conversation = get_object_or_404(Conversation, pk=conversation_id)
+    messages = Messages.objects.filter(conversation=conversation)
 
     return render(request, 'chat/view_messages.html', {'conversation': conversation, 'messages': messages})
 
