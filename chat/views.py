@@ -9,11 +9,11 @@ from django.contrib.auth.models import User
 
 def home(request):
     if request.method == 'POST':
-        name = request.POST.get('name', '')
+        username = request.POST.get('username', '')
         email = request.POST.get('email', '')
 
-        if name and email:
-            user, created = User.objects.get_or_create(email=email, defaults={'name': name})
+        if username and email:
+            user, created = User.objects.get_or_create(email=email, defaults={'username': username})
             return redirect('message_list', conversation_id=user.id)
 
     return render(request, 'chat/home.html')
@@ -64,11 +64,11 @@ def message_list(request, conversation_id):
 
 def join_conversation(request):
     if request.method == 'POST':
-        user_name = request.POST.get('name', '')
+        user_name = request.POST.get('username', '')
         user_email = request.POST.get('email', '')
 
         if user_name and user_email:
-            user, created = User.objects.get_or_create(email=user_email, defaults={'name': user_name})
+            user, created = User.objects.get_or_create(email=user_email, defaults={'username': user_name})
             conversation = Conversation.objects.create()
             conversation.users.add(user)
 
