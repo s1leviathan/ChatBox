@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 
 def home(request):
     if request.method == 'POST':
-        username = request.POST.get('username', '')
+        username = request.POST.get('name', '') 
         email = request.POST.get('email', '')
 
         if username and email:
@@ -50,12 +50,9 @@ def message_list(request, conversation_id):
         # time.sleep(1)
 
         bot_user_name = 'dimitris'
-        bot_user, _ = User.objects.get_or_create(name=bot_user_name, defaults={'email': 'd.zourdoumis@gmail.com'})
-
-       
-        if user != bot_user:
-            auto_reply = "Sorry"
-            Messages.objects.create(user=bot_user, conversation=conversation, text=auto_reply)
+        bot_user, _ = User.objects.get_or_create(username=bot_user_name, defaults={'email': 'd.zourdoumis@gmail.com'})
+        auto_reply = "Sorry"
+        auto_reply_message = Messages.objects.create(user=bot_user, conversation=conversation, text=auto_reply)
 
        
         messages = Messages.objects.filter(conversation=conversation)
@@ -64,7 +61,7 @@ def message_list(request, conversation_id):
 
 def join_conversation(request):
     if request.method == 'POST':
-        user_name = request.POST.get('username', '')
+        user_name = request.POST.get('name', '')
         user_email = request.POST.get('email', '')
 
         if user_name and user_email:
