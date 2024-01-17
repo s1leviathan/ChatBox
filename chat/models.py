@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 
 class Conversation(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ManyToManyField(User)
+    User = models.ManyToManyField(User)
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):

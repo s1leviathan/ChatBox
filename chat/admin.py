@@ -11,7 +11,7 @@ class ConversationAdmin(admin.ModelAdmin):
     list_display = ('id', 'display_user', 'date')
 
     def display_user(self, obj):
-        return ', '.join([user.name for user in obj.User.all()])
+        return ', '.join([User.name for User in obj.User.all()])
 
     display_user.short_description = 'User'
 
