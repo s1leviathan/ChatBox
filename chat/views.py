@@ -7,7 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 import openai
-import os
+from django.conf import settings
+
 
 
 @login_required
@@ -99,7 +100,7 @@ def conversation_not_found(request):
 
 
 def get_openai_response(prompt):
-    openai.api_key = os.getenv("OPENAI_API_KEY")
+    openai.api_key = settings.OPENAI_API_KEY
 
     try:
         response = openai.ChatCompletion.create(
@@ -109,7 +110,7 @@ def get_openai_response(prompt):
                 {"role": "user", "content": prompt},
             ]
         )
-        return response.choices[0].message.content
+        return response['choices'][0]['message']['content']
     except Exception as e:
         print(f"Error: {e}")
         return "Sorry, I couldn't process your request."
