@@ -6,7 +6,12 @@ from .forms import MessageForm
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
+import openai
+from django.conf import settings
 
+
+
+@login_required
 def home(request):
     if request.method == 'POST':
         username = request.POST.get('name', '') 
@@ -18,18 +23,25 @@ def home(request):
 
     return render(request, 'chat/home.html')
 
+@login_required
 def user_list(request):
     users = User.objects.all()
     return render(request, 'chat/user_list.html', {'users': users})
 
+@login_required
 def conversation_list(request):
     conversations = Conversation.objects.all()
     return render(request, 'chat/conversation_list.html', {'conversations': conversations})
 
+@login_required
 def message_list(request, conversation_id):
     conversation = Conversation.objects.get(pk=conversation_id)
     messages = Messages.objects.filter(conversation=conversation)
     user= request.user
+
+
+    
+
 
     if request.method == 'POST':
         text = request.POST.get('message', '')
@@ -44,21 +56,22 @@ def message_list(request, conversation_id):
 
      
         Messages.objects.create(user=user, conversation=conversation, text=text)
-
+        openai_response = get_openai_response(text)
        
+        bot_user, _ = User.objects.get_or_create(username='bot_user', defaults={'email': 'bot@example.com'})
         # import time
         # time.sleep(1)
 
-        bot_user_name = 'dimitris'
-        bot_user, _ = User.objects.get_or_create(username=bot_user_name, defaults={'email': 'd.zourdoumis@gmail.com'})
-        auto_reply = "Sorry"
-        auto_reply_message = Messages.objects.create(user=bot_user, conversation=conversation, text=auto_reply)
+        
+        Messages.objects.create(user=bot_user, conversation=conversation, text=openai_response)
+        
 
        
         messages = Messages.objects.filter(conversation=conversation)
 
     return render(request, 'chat/message_list.html', {'messages': messages, 'conversation': conversation})
 
+@login_required
 def join_conversation(request):
     if request.method == 'POST':
         user_name = request.POST.get('name', '')
@@ -74,7 +87,7 @@ def join_conversation(request):
     return render(request, 'chat/home.html')
         
 
-
+@login_required
 def view_messages(request, conversation_id):
     conversation = get_object_or_404(Conversation, pk=conversation_id)
     messages = Messages.objects.filter(conversation=conversation)
@@ -84,3 +97,20 @@ def view_messages(request, conversation_id):
 
 def conversation_not_found(request):
     return render(request, 'chat/conversation_not_found.html')
+
+
+def get_openai_response(prompt):
+    openai.api_key = settings.OPENAI_API_KEY
+
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt},
+            ]
+        )
+        return response['choices'][0]['message']['content']
+    except Exception as e:
+        print(f"Error: {e}")
+        return "Sorry, I couldn't process your request."
