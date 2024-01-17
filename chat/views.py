@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 
+@login_required
 def home(request):
     if request.method == 'POST':
         username = request.POST.get('name', '') 
@@ -18,14 +19,17 @@ def home(request):
 
     return render(request, 'chat/home.html')
 
+@login_required
 def user_list(request):
     users = User.objects.all()
     return render(request, 'chat/user_list.html', {'users': users})
 
+@login_required
 def conversation_list(request):
     conversations = Conversation.objects.all()
     return render(request, 'chat/conversation_list.html', {'conversations': conversations})
 
+@login_required
 def message_list(request, conversation_id):
     conversation = Conversation.objects.get(pk=conversation_id)
     messages = Messages.objects.filter(conversation=conversation)
@@ -59,6 +63,7 @@ def message_list(request, conversation_id):
 
     return render(request, 'chat/message_list.html', {'messages': messages, 'conversation': conversation})
 
+@login_required
 def join_conversation(request):
     if request.method == 'POST':
         user_name = request.POST.get('name', '')
@@ -74,7 +79,7 @@ def join_conversation(request):
     return render(request, 'chat/home.html')
         
 
-
+@login_required
 def view_messages(request, conversation_id):
     conversation = get_object_or_404(Conversation, pk=conversation_id)
     messages = Messages.objects.filter(conversation=conversation)
