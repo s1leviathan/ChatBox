@@ -6,6 +6,9 @@ from .forms import MessageForm
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
+import openai
+import os
+
 
 @login_required
 def home(request):
@@ -35,6 +38,10 @@ def message_list(request, conversation_id):
     messages = Messages.objects.filter(conversation=conversation)
     user= request.user
 
+
+    
+
+
     if request.method == 'POST':
         text = request.POST.get('message', '')
 
@@ -48,15 +55,15 @@ def message_list(request, conversation_id):
 
      
         Messages.objects.create(user=user, conversation=conversation, text=text)
-
+        openai_response = get_openai_response(text)
        
+        bot_user, _ = User.objects.get_or_create(username='bot_user', defaults={'email': 'bot@example.com'})
         # import time
         # time.sleep(1)
 
-        bot_user_name = 'dimitris'
-        bot_user, _ = User.objects.get_or_create(username=bot_user_name, defaults={'email': 'd.zourdoumis@gmail.com'})
-        auto_reply = "Sorry"
-        auto_reply_message = Messages.objects.create(user=bot_user, conversation=conversation, text=auto_reply)
+        
+        Messages.objects.create(user=bot_user, conversation=conversation, text=openai_response)
+        
 
        
         messages = Messages.objects.filter(conversation=conversation)
@@ -89,3 +96,20 @@ def view_messages(request, conversation_id):
 
 def conversation_not_found(request):
     return render(request, 'chat/conversation_not_found.html')
+
+
+def get_openai_response(prompt):
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt},
+            ]
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        print(f"Error: {e}")
+        return "Sorry, I couldn't process your request."
