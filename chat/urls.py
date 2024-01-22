@@ -11,6 +11,8 @@ router.register(r'conversations', views.ConversationViewSet)
 router.register(r'messages', views.MessagesViewSet)
 
 urlpatterns = [
+    path('api/', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('', home, name='home'),
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
@@ -21,5 +23,5 @@ urlpatterns = [
     path('join/', join_conversation, name='join_conversation'),
     path('view_messages/<int:conversation_id>/', view_messages, name='view_messages'),
     path('conversation_not_found/', conversation_not_found, name='conversation_not_found'),
-    path('api/', include(router.urls)),
+   
 ]
