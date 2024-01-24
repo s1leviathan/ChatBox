@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Conversation, Messages
+from .models import Conversation, Messages, User
 from django.contrib.auth.models import User 
 
 class UserAdmin(admin.ModelAdmin):
@@ -11,9 +11,9 @@ class ConversationAdmin(admin.ModelAdmin):
     list_display = ('id', 'display_user', 'date')
 
     def display_user(self, obj):
-        return ', '.join([User.name for User in obj.User.all()])
+        return ', '.join([user.username for user in obj.user.all()])
 
-    display_user.short_description = 'User'
+    display_user.short_description = 'user'
 
 
 class MessagesAdmin(admin.ModelAdmin):

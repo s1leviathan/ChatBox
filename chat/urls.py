@@ -11,7 +11,6 @@ router.register(r'conversations', views.ConversationViewSet)
 router.register(r'messages', views.MessagesViewSet)
 
 urlpatterns = [
-    path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('', home, name='home'),
     path('login/', auth_views.LoginView.as_view(), name='login'),

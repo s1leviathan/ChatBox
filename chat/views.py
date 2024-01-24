@@ -82,7 +82,7 @@ def join_conversation(request):
         if user_name and user_email:
             user, created = User.objects.get_or_create(email=user_email, defaults={'username': user_name})
             conversation = Conversation.objects.create()
-            conversation.users.add(user)
+            conversation.users.add(User)
 
             return redirect('message_list', conversation_id=conversation.id)
 
