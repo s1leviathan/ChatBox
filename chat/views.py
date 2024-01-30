@@ -8,6 +8,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 import openai
 from django.conf import settings
+from rest_framework import viewsets
+from .serializers import ConversationSerializer, MessagesSerializer, UserSerializer
 
 
 
@@ -80,7 +82,7 @@ def join_conversation(request):
         if user_name and user_email:
             user, created = User.objects.get_or_create(email=user_email, defaults={'username': user_name})
             conversation = Conversation.objects.create()
-            conversation.users.add(user)
+            conversation.users.add(User)
 
             return redirect('message_list', conversation_id=conversation.id)
 
@@ -114,3 +116,15 @@ def get_openai_response(prompt):
     except Exception as e:
         print(f"Error: {e}")
         return "Sorry, I couldn't process your request."
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    
+class ConversationViewSet(viewsets.ModelViewSet):
+    queryset = Conversation.objects.all()
+    serializer_class = ConversationSerializer
+
+class MessagesViewSet(viewsets.ModelViewSet):
+    queryset = Messages.objects.all()
+    serializer_class = MessagesSerializer
