@@ -21,21 +21,6 @@ class Conversation(models.Model):
     def __str__(self):
         return f"Conversation {self.id}"
     
-    def get_openai_response(prompt):
-        openai.api_key = settings.OPENAI_API_KEY
-
-        try:
-            response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": prompt},
-                ]
-            )
-            return response['choices'][0]['message']['content']
-        except Exception as e:
-            print(f"Error: {e}")
-            return "Sorry, I couldn't process your request."
 
 class Messages(models.Model):
     class Meta:

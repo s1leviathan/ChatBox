@@ -10,6 +10,7 @@ import openai
 from django.conf import settings
 from rest_framework import viewsets
 from .serializers import ConversationSerializer, MessagesSerializer, UserSerializer
+from rest_framework import permissions
 
 
 
@@ -117,14 +118,31 @@ def get_openai_response(prompt):
         print(f"Error: {e}")
         return "Sorry, I couldn't process your request."
 
+from rest_framework import viewsets
+
+from rest_framework import viewsets
+
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
     serializer_class = UserSerializer
-    
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = User.objects.none()  
+
+    def get_queryset(self):
+        return User.objects.filter(id=self.request.user.id)
+
 class ConversationViewSet(viewsets.ModelViewSet):
-    queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Conversation.objects.none()  
+
+    def get_queryset(self):
+        return Conversation.objects.filter(users=self.request.user)
 
 class MessagesViewSet(viewsets.ModelViewSet):
-    queryset = Messages.objects.all()
     serializer_class = MessagesSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Messages.objects.none()  
+
+    def get_queryset(self):
+        return Messages.objects.filter(conversation__users=self.request.user)
+
