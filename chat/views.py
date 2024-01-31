@@ -58,17 +58,17 @@ def message_list(request, conversation_id):
         # user, created = User.objects.get_or_create(email=user_email, defaults={'name': user_name})
 
      
-        Messages.objects.create(user=user, conversation=conversation, text=text)
-        openai_response = get_openai_response(text)
+        # Messages.objects.create(user=user, conversation=conversation, text=text)
+        # openai_response = get_openai_response(text)
        
-        bot_user, _ = User.objects.get_or_create(username='bot_user', defaults={'email': 'bot@example.com'})
-        # import time
-        # time.sleep(1)
+        # bot_user, _ = User.objects.get_or_create(username='bot_user', defaults={'email': 'bot@example.com'})
+        # # import time
+        # # time.sleep(1)
 
         
-        Messages.objects.create(user=bot_user, conversation=conversation, text=openai_response)
+        # Messages.objects.create(user=bot_user, conversation=conversation, text=openai_response)
         
-
+        conversation.add_message_and_bot_response(text)
        
         messages = Messages.objects.filter(conversation=conversation)
 
@@ -118,9 +118,9 @@ def get_openai_response(prompt):
         print(f"Error: {e}")
         return "Sorry, I couldn't process your request."
 
-from rest_framework import viewsets
 
-from rest_framework import viewsets
+
+
 
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
