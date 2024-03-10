@@ -16,8 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from chat.views import ConversationViewSet, MessagesViewSet, UserViewSet
+from chat.views import ConversationViewSet, MessagesViewSet, UserViewSet 
 from rest_framework import routers
+from chat.views import LogoutAPIView
+from rest_framework.authtoken import views
+
 
 
 
@@ -26,9 +29,16 @@ router.register(r'users', UserViewSet, basename='user')
 router.register(r'conversations', ConversationViewSet, basename='conversation')
 router.register(r'messages', MessagesViewSet, basename='message')
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('api/v1/', include('dj_rest_auth.urls')),
+    path('api/v1/registration/', include('dj_rest_auth.registration.urls')),
+    path('api-token-auth', views.obtain_auth_token),
+    path('api/auth/logout/', LogoutAPIView.as_view(), name='logout'), 
     path('chat/', include('chat.urls')),
-   
+    
+
+    
 ]

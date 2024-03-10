@@ -9,8 +9,22 @@ from django.contrib.auth.models import User
 import openai
 from django.conf import settings
 from rest_framework import viewsets
-from .serializers import ConversationSerializer, MessagesSerializer, UserSerializer
+from .serializers import ConversationSerializer, MessagesSerializer, UserSerializer, RegisterSerializer
 from rest_framework import permissions
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import AllowAny
+from django.contrib.auth import logout
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+from rest_framework.permissions import AllowAny
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.authentication import TokenAuthentication
+from rest_framework import generics
+
 
 
 
@@ -146,3 +160,24 @@ class MessagesViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Messages.objects.filter(conversation__users=self.request.user)
 
+
+class UserDetailAPI(APIView):
+  authentication_classes = (TokenAuthentication,)
+  permission_classes = (AllowAny,)
+  def get(self,request,*args,**kwargs):
+    user = User.objects.get(id=request.user.id)
+    serializer = UserSerializer(user)
+    return Response(serializer.data)
+  
+class RegisterUserAPIView(generics.CreateAPIView):
+  permission_classes = (AllowAny,)
+  serializer_class = RegisterSerializer
+    
+
+class LogoutAPIView(APIView):
+    
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        logout(request)
+        return redirect('/')
