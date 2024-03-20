@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 import openai
 from django.conf import settings
 from rest_framework import viewsets
-from .serializers import ConversationSerializer, MessagesSerializer, UserSerializer, RegisterSerializer
+from .serializers import ConversationSerializer, MessagesSerializer, UserSerializer
 from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -169,9 +169,9 @@ class UserDetailAPI(APIView):
     serializer = UserSerializer(user)
     return Response(serializer.data)
   
-class RegisterUserAPIView(generics.CreateAPIView):
-  permission_classes = (AllowAny,)
-  serializer_class = RegisterSerializer
+# class RegisterUserAPIView(generics.CreateAPIView):
+#   permission_classes = (AllowAny,)
+#   serializer_class = RegisterSerializer
     
 
 class LogoutAPIView(APIView):

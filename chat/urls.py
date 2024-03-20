@@ -3,7 +3,7 @@ from .views import user_list, conversation_list, message_list, home, join_conver
 from django.contrib.auth import views as auth_views
 from rest_framework.routers import DefaultRouter
 from . import views
-from .views import UserDetailAPI,RegisterUserAPIView
+from .views import UserDetailAPI
 
 
 router = DefaultRouter()
@@ -24,6 +24,6 @@ urlpatterns = [
     path('view_messages/<int:conversation_id>/', view_messages, name='view_messages'),
     path('conversation_not_found/', conversation_not_found, name='conversation_not_found'),
     path("get-details",UserDetailAPI.as_view()),
-    path('register',RegisterUserAPIView.as_view()),
+    #path('register',RegisterUserAPIView.as_view()),
     
 ]

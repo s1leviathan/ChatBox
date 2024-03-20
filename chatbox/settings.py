@@ -151,9 +151,11 @@ REST_FRAMEWORK = {
 
 SITE_ID = 1
 
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.mailersend.net'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'jim@intercept.sh'
-EMAIL_HOST_PASSWORD = 'z0urd0umis'
+EMAIL_HOST_USER = 'MS_1juCgP@trial-neqvygm18v5g0p7w.mlsender.net'  
+EMAIL_HOST_PASSWORD = 'XbJ0b0cY21x0NpFw'  
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'ChatBox <MS_1juCgP@trial-neqvygm18v5g0p7w.mlsender.net>'  
